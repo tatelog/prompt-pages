@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>安全大会ポスター作成プロンプト</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Hiragino Sans", "Yu Gothic UI", sans-serif;
+    background: #f5f5f5;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px 16px;
+  }
+  .card {
+    background: white;
+    border-radius: 16px;
+    padding: 32px 24px;
+    max-width: 480px;
+    width: 100%;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.10);
+  }
+  .label {
+    font-size: 13px;
+    font-weight: 700;
+    color: #888;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+  .title {
+    font-size: 20px;
+    font-weight: 800;
+    color: #1a1a1a;
+    margin-bottom: 20px;
+    line-height: 1.4;
+  }
+  .prompt-box {
+    background: #f8f9fc;
+    border: 1.5px solid #e0e4ef;
+    border-radius: 10px;
+    padding: 18px;
+    font-size: 15px;
+    line-height: 1.75;
+    color: #333;
+    white-space: pre-wrap;
+    margin-bottom: 20px;
+  }
+  .btn {
+    display: block;
+    width: 100%;
+    padding: 16px;
+    border-radius: 10px;
+    font-size: 16px;
+    font-weight: 700;
+    text-align: center;
+    cursor: pointer;
+    border: none;
+    text-decoration: none;
+    margin-bottom: 12px;
+    transition: opacity 0.15s;
+  }
+  .btn:active { opacity: 0.7; }
+  .btn-copy {
+    background: #1a73e8;
+    color: white;
+  }
+  .btn-copy.copied {
+    background: #34a853;
+  }
+  .btn-gemini {
+    background: white;
+    color: #1a73e8;
+    border: 2px solid #1a73e8;
+  }
+  .note {
+    font-size: 13px;
+    color: #999;
+    text-align: center;
+    margin-top: 8px;
+    line-height: 1.6;
+  }
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="label">安全大会 2026/6/30</div>
+  <div class="title">ポスター作成プロンプト</div>
+  <div class="prompt-box" id="prompt">あなたは建設業の安全衛生の専門家です。
+全社安全大会のポスター文言を作ってください。
+
+以下を入力してください：
+・会社名
+・今年の重点取り組み（例：転落防止、熱中症対策）
+・スローガンのイメージ（明るく／力強く／シンプルに など）
+
+入力してもらったら、キャッチコピーとポスター本文を作ります。</div>
+
+  <button class="btn btn-copy" id="copyBtn" onclick="copyPrompt()">コピーする</button>
+  <a class="btn btn-gemini" href="https://gemini.google.com/app" target="_blank">Gemini を開く</a>
+  <div class="note">① コピー → ② Gemini を開く → ③ 貼り付けて送信</div>
+</div>
+
+<script>
+function copyPrompt() {
+  const text = document.getElementById('prompt').innerText;
+  navigator.clipboard.writeText(text).then(() => {
+    const btn = document.getElementById('copyBtn');
+    btn.textContent = 'コピーしました ✓';
+    btn.classList.add('copied');
+    setTimeout(() => {
+      btn.textContent = 'コピーする';
+      btn.classList.remove('copied');
+    }, 2500);
+  }).catch(() => {
+    const range = document.createRange();
+    range.selectNode(document.getElementById('prompt'));
+    window.getSelection().removeAllRanges();
+    window.getSelection().addRange(range);
+    document.execCommand('copy');
+    window.getSelection().removeAllRanges();
+    const btn = document.getElementById('copyBtn');
+    btn.textContent = 'コピーしました ✓';
+    btn.classList.add('copied');
+    setTimeout(() => {
+      btn.textContent = 'コピーする';
+      btn.classList.remove('copied');
+    }, 2500);
+  });
+}
+</script>
+</body>
+</html>
