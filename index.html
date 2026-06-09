@@ -99,37 +99,43 @@
 
 入力してもらったら、キャッチコピーとポスター本文を作ります。</div>
 
-  <button class="btn btn-copy" id="copyBtn" onclick="copyPrompt()">コピーする</button>
-  <a class="btn btn-gemini" href="https://gemini.google.com/app">Gemini を開く</a>
-  <div class="note">① コピー → ② Gemini を開く → ③ 貼り付けて送信</div>
+  <button class="btn btn-copy" id="copyBtn" onclick="copyAndGo()">コピーして Gemini へ</button>
+  <div class="note">タップするとプロンプトをコピーして Gemini が開きます</div>
 </div>
 
 <script>
-function copyPrompt() {
+function copyAndGo() {
   const text = document.getElementById('prompt').innerText;
-  navigator.clipboard.writeText(text).then(() => {
-    const btn = document.getElementById('copyBtn');
+  const btn = document.getElementById('copyBtn');
+  const geminiUrl = 'https://gemini.google.com/app';
+
+  const go = () => {
     btn.textContent = 'コピーしました ✓';
     btn.classList.add('copied');
-    setTimeout(() => {
-      btn.textContent = 'コピーする';
-      btn.classList.remove('copied');
-    }, 2500);
-  }).catch(() => {
-    const range = document.createRange();
-    range.selectNode(document.getElementById('prompt'));
-    window.getSelection().removeAllRanges();
-    window.getSelection().addRange(range);
-    document.execCommand('copy');
-    window.getSelection().removeAllRanges();
-    const btn = document.getElementById('copyBtn');
-    btn.textContent = 'コピーしました ✓';
-    btn.classList.add('copied');
-    setTimeout(() => {
-      btn.textContent = 'コピーする';
-      btn.classList.remove('copied');
-    }, 2500);
-  });
+    setTimeout(() => { window.location.href = geminiUrl; }, 600);
+  };
+
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(text).then(go).catch(() => {
+      fallbackCopy(text);
+      go();
+    });
+  } else {
+    fallbackCopy(text);
+    go();
+  }
+}
+
+function fallbackCopy(text) {
+  const ta = document.createElement('textarea');
+  ta.value = text;
+  ta.style.position = 'fixed';
+  ta.style.opacity = '0';
+  document.body.appendChild(ta);
+  ta.focus();
+  ta.select();
+  document.execCommand('copy');
+  document.body.removeChild(ta);
 }
 </script>
 </body>
