@@ -105,37 +105,17 @@
 
 <script>
 function copyAndGo() {
+  // 非同期(Promise)を使わず同期処理のみ — ブラウザのジェスチャー制限を回避
   const text = document.getElementById('prompt').innerText;
-  const btn = document.getElementById('copyBtn');
-  const geminiUrl = 'https://gemini.google.com/app';
-
-  const go = () => {
-    btn.textContent = 'コピーしました ✓';
-    btn.classList.add('copied');
-    setTimeout(() => { window.location.href = geminiUrl; }, 600);
-  };
-
-  if (navigator.clipboard && navigator.clipboard.writeText) {
-    navigator.clipboard.writeText(text).then(go).catch(() => {
-      fallbackCopy(text);
-      go();
-    });
-  } else {
-    fallbackCopy(text);
-    go();
-  }
-}
-
-function fallbackCopy(text) {
   const ta = document.createElement('textarea');
   ta.value = text;
-  ta.style.position = 'fixed';
-  ta.style.opacity = '0';
+  ta.style.cssText = 'position:fixed;top:0;left:0;opacity:0;';
   document.body.appendChild(ta);
   ta.focus();
   ta.select();
   document.execCommand('copy');
   document.body.removeChild(ta);
+  window.location.href = 'https://gemini.google.com/app';
 }
 </script>
 </body>
