@@ -99,23 +99,37 @@
 
 入力してもらったら、キャッチコピーとポスター本文を作ります。</div>
 
-  <button class="btn btn-copy" id="copyBtn" onclick="copyAndGo()">コピーして Gemini へ</button>
-  <div class="note">タップするとプロンプトをコピーして Gemini が開きます</div>
+  <button class="btn btn-copy" id="copyBtn" onclick="doCopy()">① プロンプトをコピー</button>
+  <a class="btn btn-gemini" href="https://gemini.google.com/app">② Gemini を開く</a>
+  <div class="note">コピー → Gemini を開く → 貼り付けて送信</div>
 </div>
 
 <script>
-function copyAndGo() {
-  // 非同期(Promise)を使わず同期処理のみ — ブラウザのジェスチャー制限を回避
+function doCopy() {
   const text = document.getElementById('prompt').innerText;
-  const ta = document.createElement('textarea');
-  ta.value = text;
-  ta.style.cssText = 'position:fixed;top:0;left:0;opacity:0;';
-  document.body.appendChild(ta);
-  ta.focus();
-  ta.select();
-  document.execCommand('copy');
-  document.body.removeChild(ta);
-  window.location.href = 'https://gemini.google.com/app';
+  const btn = document.getElementById('copyBtn');
+  navigator.clipboard.writeText(text).then(() => {
+    btn.textContent = '① コピーしました ✓';
+    btn.classList.add('copied');
+    setTimeout(() => {
+      btn.textContent = '① プロンプトをコピー';
+      btn.classList.remove('copied');
+    }, 3000);
+  }).catch(() => {
+    const ta = document.createElement('textarea');
+    ta.value = text;
+    ta.style.cssText = 'position:fixed;top:0;left:0;opacity:0;';
+    document.body.appendChild(ta);
+    ta.focus(); ta.select();
+    document.execCommand('copy');
+    document.body.removeChild(ta);
+    btn.textContent = '① コピーしました ✓';
+    btn.classList.add('copied');
+    setTimeout(() => {
+      btn.textContent = '① プロンプトをコピー';
+      btn.classList.remove('copied');
+    }, 3000);
+  });
 }
 </script>
 </body>
