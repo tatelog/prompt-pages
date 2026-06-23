@@ -60,27 +60,21 @@
     cursor: pointer;
     border: none;
     text-decoration: none;
-    margin-bottom: 12px;
     transition: opacity 0.15s;
   }
   .btn:active { opacity: 0.7; }
-  .btn-copy {
+  .btn-go {
     background: #1a73e8;
     color: white;
   }
-  .btn-copy.copied {
+  .btn-go.copied {
     background: #34a853;
-  }
-  .btn-gemini {
-    background: white;
-    color: #1a73e8;
-    border: 2px solid #1a73e8;
   }
   .note {
     font-size: 13px;
     color: #999;
     text-align: center;
-    margin-top: 8px;
+    margin-top: 12px;
     line-height: 1.6;
   }
 </style>
@@ -89,47 +83,43 @@
 <div class="card">
   <div class="label">安全大会 2026/6/30</div>
   <div class="title">ポスター作成プロンプト</div>
-  <div class="prompt-box" id="prompt">あなたは建設業の安全衛生の専門家です。
-全社安全大会のポスター文言を作ってください。
+  <div class="prompt-box" id="prompt">あなたは建設業の安全衛生の専門家かつ広報担当です。
 
-以下を入力してください：
+全社安全大会のポスターを作ってください。
+
+以下の情報は仮で良いです。
 ・会社名
-・今年の重点取り組み（例：転落防止、熱中症対策）
-・スローガンのイメージ（明るく／力強く／シンプルに など）
+・今年の重点取り組み：熱中症対策
+・スローガンのイメージ：シンプル</div>
 
-入力してもらったら、キャッチコピーとポスター本文を作ります。</div>
-
-  <button class="btn btn-copy" id="copyBtn" onclick="doCopy()">① プロンプトをコピー</button>
-  <a class="btn btn-gemini" href="https://gemini.google.com">② Gemini を開く</a>
-  <div class="note">コピー → Gemini を開く → 貼り付けて送信</div>
+  <button class="btn btn-go" id="goBtn" onclick="goGemini()">プロンプトをコピーして Gemini を開く</button>
+  <div class="note">ボタンを押すとプロンプトがコピーされ、Gemini が開きます。<br>Gemini で貼り付けて送信してください。</div>
 </div>
 
 <script>
-function doCopy() {
+function copyText(text) {
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(text).catch(fallbackCopy.bind(null, text));
+  } else {
+    fallbackCopy(text);
+  }
+}
+function fallbackCopy(text) {
+  const ta = document.createElement('textarea');
+  ta.value = text;
+  ta.style.cssText = 'position:fixed;top:0;left:0;opacity:0;';
+  document.body.appendChild(ta);
+  ta.focus(); ta.select();
+  try { document.execCommand('copy'); } catch (e) {}
+  document.body.removeChild(ta);
+}
+function goGemini() {
   const text = document.getElementById('prompt').innerText;
-  const btn = document.getElementById('copyBtn');
-  navigator.clipboard.writeText(text).then(() => {
-    btn.textContent = '① コピーしました ✓';
-    btn.classList.add('copied');
-    setTimeout(() => {
-      btn.textContent = '① プロンプトをコピー';
-      btn.classList.remove('copied');
-    }, 3000);
-  }).catch(() => {
-    const ta = document.createElement('textarea');
-    ta.value = text;
-    ta.style.cssText = 'position:fixed;top:0;left:0;opacity:0;';
-    document.body.appendChild(ta);
-    ta.focus(); ta.select();
-    document.execCommand('copy');
-    document.body.removeChild(ta);
-    btn.textContent = '① コピーしました ✓';
-    btn.classList.add('copied');
-    setTimeout(() => {
-      btn.textContent = '① プロンプトをコピー';
-      btn.classList.remove('copied');
-    }, 3000);
-  });
+  const btn = document.getElementById('goBtn');
+  copyText(text);
+  btn.textContent = 'コピーしました ✓ Gemini を開きます';
+  btn.classList.add('copied');
+  window.open('https://gemini.google.com/app', '_blank');
 }
 </script>
 </body>
