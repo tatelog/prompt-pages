@@ -60,21 +60,55 @@
     cursor: pointer;
     border: none;
     text-decoration: none;
+    margin-bottom: 12px;
     transition: opacity 0.15s;
   }
   .btn:active { opacity: 0.7; }
-  .btn-go {
+  .btn-copy {
     background: #1a73e8;
     color: white;
   }
-  .btn-go.copied {
+  .btn-copy.copied {
     background: #34a853;
+  }
+  .btn-gemini {
+    background: white;
+    color: #1a73e8;
+    border: 2px solid #1a73e8;
+  }
+  .video-section {
+    margin-top: 24px;
+    padding-top: 20px;
+    border-top: 1.5px solid #e0e4ef;
+  }
+  .video-title {
+    font-size: 15px;
+    font-weight: 700;
+    color: #1a1a1a;
+    margin-bottom: 12px;
+  }
+  .video-wrap {
+    position: relative;
+    width: 100%;
+    padding-bottom: 56.25%;
+    border-radius: 10px;
+    overflow: hidden;
+    background: #000;
+  }
+  .video-wrap video,
+  .video-wrap iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border: none;
   }
   .note {
     font-size: 13px;
     color: #999;
     text-align: center;
-    margin-top: 12px;
+    margin-top: 8px;
     line-height: 1.6;
   }
 </style>
@@ -92,34 +126,47 @@
 ・今年の重点取り組み：熱中症対策
 ・スローガンのイメージ：シンプル</div>
 
-  <button class="btn btn-go" id="goBtn" onclick="goGemini()">プロンプトをコピーして Gemini を開く</button>
-  <div class="note">ボタンを押すとプロンプトがコピーされ、Gemini が開きます。<br>Gemini で貼り付けて送信してください。</div>
+  <button class="btn btn-copy" id="copyBtn" onclick="doCopy()">① プロンプトをコピー</button>
+  <a class="btn btn-gemini" href="https://gemini.google.com/app" target="_blank" rel="noopener">② Gemini を開く</a>
+  <div class="note">コピー → Gemini を開く → 貼り付けて送信</div>
+
+  <div class="video-section">
+    <div class="video-title">操作説明</div>
+    <div class="video-wrap">
+      <video controls playsinline preload="metadata">
+        <source src="demo.mp4" type="video/mp4">
+      </video>
+    </div>
+  </div>
 </div>
 
 <script>
-function copyText(text) {
+function doCopy() {
+  var text = document.getElementById('prompt').innerText;
+  var btn = document.getElementById('copyBtn');
   if (navigator.clipboard && navigator.clipboard.writeText) {
-    navigator.clipboard.writeText(text).catch(fallbackCopy.bind(null, text));
+    navigator.clipboard.writeText(text).then(onCopied).catch(function() { fallbackCopy(text); onCopied(); });
   } else {
     fallbackCopy(text);
+    onCopied();
+  }
+  function onCopied() {
+    btn.textContent = '① コピーしました ✓';
+    btn.classList.add('copied');
+    setTimeout(function() {
+      btn.textContent = '① プロンプトをコピー';
+      btn.classList.remove('copied');
+    }, 3000);
   }
 }
 function fallbackCopy(text) {
-  const ta = document.createElement('textarea');
+  var ta = document.createElement('textarea');
   ta.value = text;
   ta.style.cssText = 'position:fixed;top:0;left:0;opacity:0;';
   document.body.appendChild(ta);
   ta.focus(); ta.select();
   try { document.execCommand('copy'); } catch (e) {}
   document.body.removeChild(ta);
-}
-function goGemini() {
-  const text = document.getElementById('prompt').innerText;
-  const btn = document.getElementById('goBtn');
-  copyText(text);
-  btn.textContent = 'コピーしました ✓ Gemini を開きます';
-  btn.classList.add('copied');
-  window.open('https://gemini.google.com/app', '_blank');
 }
 </script>
 </body>
