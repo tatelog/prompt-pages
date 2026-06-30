@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>安全大会ポスター作成プロンプト</title>
+<title>安全大会ポスター作成 指示文</title>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body {
@@ -116,7 +116,7 @@
 <body>
 <div class="card">
   <div class="label">安全大会 2026/6/30</div>
-  <div class="title">ポスター作成プロンプト</div>
+  <div class="title">ポスター作成 指示文</div>
   <div class="prompt-box" id="prompt">あなたは建設業の安全衛生の専門家かつ広報担当です。
 
 全社安全大会のポスターを作ってください。
@@ -126,7 +126,7 @@
 ・今年の重点取り組み：熱中症対策
 ・スローガンのイメージ：シンプル</div>
 
-  <button class="btn btn-copy" id="copyBtn" onclick="doCopy()">① プロンプトをコピー</button>
+  <button class="btn btn-copy" id="copyBtn" onclick="doCopy()">① 指示文をコピー</button>
   <a class="btn btn-gemini" href="https://gemini.google.com" target="_blank" rel="noopener">② Gemini を開く</a>
   <div class="note">コピー → Gemini を開く → 貼り付けて送信</div>
 
@@ -154,7 +154,7 @@ function doCopy() {
     btn.textContent = '① コピーしました ✓';
     btn.classList.add('copied');
     setTimeout(function() {
-      btn.textContent = '① プロンプトをコピー';
+      btn.textContent = '① 指示文をコピー';
       btn.classList.remove('copied');
     }, 3000);
   }
